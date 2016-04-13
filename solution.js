@@ -1,7 +1,12 @@
 var mongo = require('mongodb').MongoClient
 
 var url = "mongodb://localhost:27017/learnyoumongo";
-var age = parseInt(process.argv[2], 10);
+var firstName = process.argv[2];
+var lastName = process.argv[3];
+var doc = {
+  firstName: firstName,
+  lastName: lastName
+}
 
 // connect to specified url of database
 mongo.connect(url, function(err, db) {
@@ -9,20 +14,15 @@ mongo.connect(url, function(err, db) {
   if (err) { return console.dir(err); }
 
   // if connected, next try to find the collection
-  db.collection('parrots', function (err, collection) {
+  db.collection('docs', function (err, collection) {
     // if collection not found: exit
     if (err) { return console.dir(err); }
 
-    // next if collection is found, find elements
-    collection.find( { age: { $gt: age } }, { _id: 0 } )
-      .toArray(function(err, documents) {
-        if (err) { return console.dir(err); }
-
-        console.log(documents)
-
-        // since node is async: db close sits here
-        db.close();
-      });
+    // next insert into collection
+    collection.insert(doc, function(err, data) {
+      if (err) { return console.dir(err); }
+      console.log(JSON.stringify(doc));
+      db.close();
+    });
   });
-
 });
