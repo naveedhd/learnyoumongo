@@ -14,10 +14,10 @@ mongo.connect(url, function(err, db) {
     if (err) { return console.dir(err); }
 
     // next if collection is found, find elements
-    collection.find( {age: { $gt: age } })
+    collection.find( { age: { $gt: age } }, { _id: 0 } )
       .toArray(function(err, documents) {
         if (err) { return console.dir(err); }
-        
+
         console.log(documents)
 
         // since node is async: db close sits here
